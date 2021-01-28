@@ -1,4 +1,4 @@
-import { doLogin } from "../controllers/user_controllers";
+import { doLogin } from "../controllers/auth_controllers";
 
 import express from "express";
 

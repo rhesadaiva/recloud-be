@@ -1,6 +1,6 @@
 import moment from "moment";
 import connection from "../connection";
-import uuidv4 from "uuid/v4";
+import { uuid } from "uuidv4";
 import {
   hashPassword,
   isValidEmail,
@@ -21,31 +21,31 @@ const insertNewUser = async (email, password, result) => {
   try {
     // Check if data empty
     if (!email || !password) {
-      result(null, { code: 400, message: "Email or password is empty!" });
+      return result(null, {
+        code: 400,
+        message: "Email or password is empty!",
+      });
     }
 
     // Check email pattern
     const checkEmailPattern = isValidEmail(email);
 
     if (!checkEmailPattern) {
-      result(null, { code: 400, message: "Please input a valid email!" });
+      return result(null, {
+        code: 400,
+        message: "Please input a valid email!",
+      });
     }
 
     // Hash password
     const hashProcess = hashPassword(password);
 
     const queryText = `INSERT INTO
-    ${tblUsers} (id, email, password, created_date, modified_date)
-    VALUES($1, $2, $3, $4, $5)
+    ${tblUsers} (email, password, created_date, modified_date)
+    VALUES($1, $2, $3, $4)
     returning *`;
 
-    const values = [
-      uuidv4(),
-      email,
-      hashProcess,
-      moment(new Date()),
-      moment(new Date()),
-    ];
+    const values = [email, hashProcess, moment(new Date()), moment(new Date())];
 
     const { rows } = await connection.query(queryText, values);
 
@@ -55,9 +55,9 @@ const insertNewUser = async (email, password, result) => {
     return result({ code: 201, token: getToken, data: rows[0].id }, null);
   } catch (error) {
     if (error.routine === "_bt.check_unique") {
-      result(null, { code: 400, message: "User already exist!" });
+      return result(null, { code: 400, message: "User already exist!" });
     }
-    result(null, {
+    return result(null, {
       code: 500,
       message: `An error occured - ${error.message}`,
     });
@@ -75,20 +75,26 @@ const processCheckLogin = async (email, password, result) => {
   try {
     // Check if input is empty
     if (!email || !password) {
-      result(null, { code: 400, message: "Email or password is empty!" });
+      return result(null, {
+        code: 400,
+        message: "Email or password is empty!",
+      });
     }
 
     // Check email pattern
     const checkEmailPattern = isValidEmail(email);
 
     if (!checkEmailPattern) {
-      result(null, { code: 400, message: "Please input a valid email!" });
+      return result(null, {
+        code: 400,
+        message: "Please input a valid email!",
+      });
     }
 
     const queryText = `SELECT * FROM ${tblUsers} WHERE email = $1`;
     const values = [email];
 
-    const { rows } = await db.query(queryText, values);
+    const { rows } = await connection.query(queryText, values);
 
     // User not found
     if (rows.length < 0) {
@@ -127,7 +133,7 @@ const deleteDataUser = async (id, result) => {
   const deleteQuery = `DELETE FROM ${tblUsers} WHERE id=$1 returning *`;
   const values = [id];
   try {
-    const { rows } = await db.query(deleteQuery, values);
+    const { rows } = await connection.query(deleteQuery, values);
     if (rows.length < 0) {
       return result(null, { code: 400, message: "User Not Found" });
     }
