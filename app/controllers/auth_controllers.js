@@ -1,4 +1,4 @@
-import { processCheckLogin } from "../models/user_models";
+import { processCheckLogin } from "../models/auth_models";
 
 /**
  * Login
