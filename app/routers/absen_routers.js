@@ -9,7 +9,7 @@ import { verifyToken } from "../middlewares/auth_middlewares";
 
 const router = express.Router();
 
-router.post("/presensi/in", postAbsenMasuk);
-router.post("/presensi/out", postAbsenKeluar);
+router.post("/presensi/in", verifyToken, postAbsenMasuk);
+router.post("/presensi/out", verifyToken, postAbsenKeluar);
 
 export default router;
