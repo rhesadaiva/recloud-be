@@ -7,16 +7,22 @@ import { insertNewUser, deleteDataUser } from "../models/user_models";
  */
 
 const postNewUsers = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, nama_user, role } = req.body;
 
   try {
-    await insertNewUser(email, password, async (result, error) => {
-      if (error) {
-        return res.status(error.code).send(error);
-      } else {
-        return res.status(result.code).send(result);
-      }
-    });
+    await insertNewUser(
+      email,
+      password,
+      nama_user,
+      role,
+      async (result, error) => {
+        if (error) {
+          return res.status(error.code).send(error);
+        } else {
+          return res.status(result.code).send(result);
+        }
+      },
+    );
   } catch (error) {
     return res
       .status(500)
