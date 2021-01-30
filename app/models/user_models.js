@@ -1,29 +1,25 @@
 import moment from "moment";
 import connection from "../connection";
-import { uuid } from "uuidv4";
-import {
-  hashPassword,
-  isValidEmail,
-  comparePassword,
-  generateToken,
-} from "../helpers/helpers";
+import { hashPassword, isValidEmail } from "../helpers/helpers";
 
 const tblUsers = "alibaba_dev.td_users";
 
 /**
  * Create New User
  * @param {string} email
- * @param {string} password
+ * @param {string} password,
+ * @param {string} nama,
+ * @param {number} role,
  * @return {object} result return response
  */
 
-const insertNewUser = async (email, password, result) => {
+const insertNewUser = async (email, password, nama_user, role, result) => {
   try {
     // Check if data empty
-    if (!email || !password) {
+    if (!email || !password || !nama_user || !role) {
       return result(null, {
         code: 400,
-        message: "Email or password is empty!",
+        message: "Field is empty!",
       });
     }
 
@@ -41,18 +37,25 @@ const insertNewUser = async (email, password, result) => {
     const hashProcess = hashPassword(password);
 
     const queryText = `INSERT INTO
-    ${tblUsers} (email, password, created_date, modified_date)
+    ${tblUsers} (email, password, nama_user, fl_is_verified, fl_role, created_date, modified_date)
     VALUES($1, $2, $3, $4)
     returning *`;
 
-    const values = [email, hashProcess, moment(new Date()), moment(new Date())];
+    const values = [
+      email,
+      hashProcess,
+      nama_user,
+      "N",
+      role,
+      moment(new Date()),
+      moment(new Date()),
+    ];
 
+    // Insert new data
     const { rows } = await connection.query(queryText, values);
+    return result({ code: 201, data: rows[0].id }, null);
 
-    // Create Token
-    const getToken = generateToken(rows[0].id);
-
-    return result({ code: 201, token: getToken, data: rows[0].id }, null);
+    // catch
   } catch (error) {
     if (error.routine === "_bt.check_unique") {
       return result(null, { code: 400, message: "User already exist!" });
