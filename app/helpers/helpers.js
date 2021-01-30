@@ -50,4 +50,37 @@ const generateToken = (id) => {
   return token;
 };
 
-export { hashPassword, isValidEmail, comparePassword, generateToken };
+/**
+ * Create Timestamp
+ * @returns {string} Timestamp
+ */
+
+const dateTimeNow = () => {
+  const tzoffset = new Date().getTimezoneOffset() * 60000;
+  const localISOTime = new Date(Date.now() - tzoffset)
+    .toISOString()
+    .slice(0, -5)
+    .replace("T", " ");
+
+  return localISOTime;
+};
+
+/**
+ * Generate Date Now
+ * @returns {date} Date
+ */
+
+const dateNow = () => {
+  const date = new Date().toISOString().slice(0, 10);
+
+  return date.toString();
+};
+
+export {
+  hashPassword,
+  isValidEmail,
+  comparePassword,
+  generateToken,
+  dateTimeNow,
+  dateNow,
+};
