@@ -45,7 +45,7 @@ const generateToken = (id) => {
       userId: id,
     },
     process.env.SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "300s" },
   );
   return token;
 };
