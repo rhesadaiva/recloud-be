@@ -30,6 +30,8 @@ const baseUrlWeb = "/api/datask";
 // IMPORT ROUTE
 import auth from "./app/routers/auth_routers";
 import users from "./app/routers/users_routers";
+import presensi from "./app/routers/absen_routers";
 
 app.use(baseUrlWeb, auth);
 app.use(baseUrlWeb, users);
+app.use(baseUrlWeb, presensi);
