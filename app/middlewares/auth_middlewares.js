@@ -14,7 +14,7 @@ const verifyToken = async (req, res, next) => {
         .send({ code: 400, message: "Token is not provided!" });
     }
 
-    const decodedToken = await jwt.verify(token, process.env.SECRET);
+    const decodedToken = jwt.verify(token, process.env.SECRET);
     const checkId = await checkUser(decodedToken.userId);
 
     if (!checkId) {
