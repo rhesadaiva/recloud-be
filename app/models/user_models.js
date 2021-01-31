@@ -2,7 +2,7 @@ import moment from "moment";
 import connection from "../connection";
 import { hashPassword, isValidEmail } from "../helpers/helpers";
 
-const tblUsers = "alibaba_dev.td_users";
+const tblUsers = "alibaba.td_users";
 
 /**
  * Create New User
@@ -37,8 +37,8 @@ const insertNewUser = async (email, password, nama_user, role, result) => {
     const hashProcess = hashPassword(password);
 
     const queryText = `INSERT INTO
-    ${tblUsers} (email, password, nama_user, fl_is_verified, fl_role, created_date, modified_date)
-    VALUES($1, $2, $3, $4)
+    ${tblUsers} (email, password, nama_user, fl_is_verified, fl_role, created_at, modified_at)
+    VALUES($1, $2, $3, $4,$5,$6,$7)
     returning *`;
 
     const values = [
@@ -53,7 +53,7 @@ const insertNewUser = async (email, password, nama_user, role, result) => {
 
     // Insert new data
     const { rows } = await connection.query(queryText, values);
-    return result({ code: 201, data: rows[0].id }, null);
+    return result({ code: 201, data: rows[0] }, null);
 
     // catch
   } catch (error) {

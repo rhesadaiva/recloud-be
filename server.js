@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
+
 import cookieParser from "cookie-parser";
 
 // CONFIG ENVIRONMENT
@@ -20,8 +20,6 @@ const corsOptions = {
   exposedHeaders: ["Authorization", "App-Control"],
 };
 
-app.use(cors(corsOptions));
-
 app.use(cookieParser());
 
 // WEB ROUTE
@@ -31,7 +29,9 @@ const baseUrlWeb = "/api/datask";
 import auth from "./app/routers/auth_routers";
 import users from "./app/routers/users_routers";
 import presensi from "./app/routers/absen_routers";
+import task from "./app/routers/task_routers";
 
 app.use(baseUrlWeb, auth);
 app.use(baseUrlWeb, users);
 app.use(baseUrlWeb, presensi);
+app.use(baseUrlWeb, task);
