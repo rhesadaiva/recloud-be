@@ -11,7 +11,7 @@ const tblRefStatus = "alibaba.tr_status_task";
  * @returns {object} result
  */
 const getTaskByUserDate = async (id_user, task_date, result) => {
-  const queryText = `SELECT a.nama_task,a.uraian_task ,a.task_date ,a.task_start ,a.task_end, a.task_duration ,
+  const queryText = `SELECT a.id_task, a.nama_task,a.uraian_task ,a.task_date ,a.task_start ,a.task_end, a.task_duration ,
   (SELECT nama_user from ${tblUsers} b WHERE a.assignee_id = b.id) AS pemilik_tugas, 
   (SELECT nama_user from ${tblUsers} b WHERE a.assignor_id = b.id) AS pemberi_tugas, 
   (SELECT ur_status_task from ${tblRefStatus} c WHERE a.fl_status_task = c.kd_status_task) AS task_status
