@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-
+import cors from "cors";
 import cookieParser from "cookie-parser";
 
 // CONFIG ENVIRONMENT
@@ -16,9 +16,18 @@ app.listen(port).on("listening", () => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const corsOptions = {
-  exposedHeaders: ["Authorization", "App-Control"],
+var allowlist = ["http://localhost:3000"];
+var corsOptionsDelegate = function (req, callback) {
+  var corsOptions;
+  if (allowlist.indexOf(req.header("Origin")) !== -1) {
+    corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = { origin: false }; // disable CORS for this request
+  }
+  callback(null, corsOptions); // callback expects two parameters: error and options
 };
+
+app.use(cors(corsOptionsDelegate));
 
 app.use(cookieParser());
 
