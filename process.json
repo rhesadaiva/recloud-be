@@ -1,0 +1,9 @@
+{
+  "script": "npm run serve",
+  "watch": true,
+  "ignore_watch": ["assets", "node_modules"],
+  "watch_options": {
+    "folloSymlinks": false
+  },
+  "name": "DATASK_BE"
+}
